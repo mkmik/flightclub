@@ -8,8 +8,6 @@ import (
 	"log"
 	"net/url"
 	"os"
-	"strings"
-	"text/tabwriter"
 	"time"
 
 	"github.com/alecthomas/kong"
@@ -17,6 +15,7 @@ import (
 	"github.com/apache/arrow/go/v12/arrow/array"
 	"github.com/apache/arrow/go/v12/arrow/flight"
 	"github.com/apache/arrow/go/v12/arrow/flight/flightsql"
+	"github.com/olekukonko/tablewriter"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
@@ -50,6 +49,8 @@ func (cmd *QueryCmd) Run(cli *Context) error {
 		"database", cli.DB,
 		// we need to pass this explicitly because IOx doesn't support the `auth-token` header that flight passes
 		"authorization", "Token "+cli.Token,
+		// enables special queries
+		"iox-debug", "true",
 	)
 
 	addr, cred, err := parseAddr(cli.URL)
@@ -92,30 +93,34 @@ func (cmd *QueryCmd) Run(cli *Context) error {
 }
 
 func printRecord(record arrow.Record) error {
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.Debug)
-	defer w.Flush()
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetAutoFormatHeaders(false)
+	table.SetRowLine(false)
+	table.SetBorder(false)
+	table.SetAutoWrapText(true)
+	//	table.SetBorders(tablewriter.Border{Top: true})
 
-	for c := int64(0); c < record.NumCols(); c++ {
-		fmt.Fprintf(w, "%s\t", record.ColumnName(int(c)))
+	var header []string
+	for c := 0; c < int(record.NumCols()); c++ {
+		header = append(header, record.ColumnName(c))
 	}
-	fmt.Fprintf(w, "\n")
-	w.Init(os.Stdout, 0, 0, 1, '-', tabwriter.Debug)
-	for c := int64(0); c < record.NumCols(); c++ {
-		fmt.Fprintf(w, "%s\t", strings.Repeat("-", len(record.ColumnName(int(c)))))
-	}
-	fmt.Fprintf(w, "\n")
-	w.Init(os.Stdout, 0, 0, 1, ' ', tabwriter.Debug)
+	table.SetHeader(header)
+
 	for r := 0; r < int(record.NumRows()); r++ {
+		var row []string
 		for c := 0; c < int(record.NumCols()); c++ {
 			s, err := renderText(record.Column(c), r)
 			if err != nil {
 				return err
 			}
 
-			fmt.Fprintf(w, "%s\t", s)
+			row = append(row, s)
 		}
-		fmt.Fprintf(w, "\n")
+		table.Append(row)
 	}
+
+	table.SetFooter(header)
+	table.Render()
 	return nil
 }
 
