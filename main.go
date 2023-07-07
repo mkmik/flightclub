@@ -59,7 +59,7 @@ func (cmd *QueryCmd) Run(cli *Context) error {
 
 	if cli.GenTraceId {
 		traceID := generateRandomHex(8)
-		ctx = metadata.AppendToOutgoingContext(ctx, traceIDHeader, traceID)
+		ctx = metadata.AppendToOutgoingContext(ctx, traceIDHeader, fmt.Sprintf("%s:1112223334445:0:1", traceID))
 
 		fmt.Printf("Trace ID set to %s\n", traceID)
 	}
