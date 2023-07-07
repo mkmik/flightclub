@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"os"
 	"time"
 
 	"github.com/apache/arrow/go/v12/arrow"
@@ -38,7 +37,7 @@ func (t *Timings) Total() time.Duration {
 	return t.Warmup + t.Execute + t.DoGet
 }
 
-func printQuery(ctx context.Context, c *flightsql.Client, query string) (Timings, error) {
+func printQuery(ctx context.Context, w io.Writer, c *flightsql.Client, query string) (Timings, error) {
 	beforeExecute := time.Now()
 	info, err := c.Execute(ctx, query)
 	if err != nil {
@@ -46,7 +45,7 @@ func printQuery(ctx context.Context, c *flightsql.Client, query string) (Timings
 	}
 	executeDuration := time.Since(beforeExecute)
 
-	timings, err := printInfo(ctx, c, info)
+	timings, err := printInfo(ctx, w, c, info)
 	if err != nil {
 		return Timings{}, err
 	}
@@ -54,9 +53,17 @@ func printQuery(ctx context.Context, c *flightsql.Client, query string) (Timings
 	return timings.Add(Timings{Execute: executeDuration}), nil
 }
 
-func printInfo(ctx context.Context, c *flightsql.Client, info *flight.FlightInfo) (Timings, error) {
-	var doGetDuration time.Duration
+func printInfo(ctx context.Context, w io.Writer, c *flightsql.Client, info *flight.FlightInfo) (Timings, error) {
+	table := tablewriter.NewWriter(w)
+	table.SetAutoFormatHeaders(false)
+	table.SetRowLine(false)
+	table.SetBorder(false)
+	table.SetAutoWrapText(true)
+	//	table.SetBorders(tablewriter.Border{Top: true})
 
+	defer table.Render()
+
+	var doGetDuration time.Duration
 	for _, endpoint := range info.Endpoint {
 		beforeDoGet := time.Now()
 		reader, err := c.DoGet(ctx, endpoint.GetTicket())
@@ -67,7 +74,7 @@ func printInfo(ctx context.Context, c *flightsql.Client, info *flight.FlightInfo
 
 		for reader.Next() {
 			record := reader.Record()
-			if err := printRecord(record); err != nil {
+			if err := printRecord(table, record); err != nil {
 				return Timings{}, err
 			}
 		}
@@ -86,13 +93,7 @@ func printInfo(ctx context.Context, c *flightsql.Client, info *flight.FlightInfo
 	return timings, nil
 }
 
-func printRecord(record arrow.Record) error {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetAutoFormatHeaders(false)
-	table.SetRowLine(false)
-	table.SetBorder(false)
-	table.SetAutoWrapText(true)
-	//	table.SetBorders(tablewriter.Border{Top: true})
+func printRecord(table *tablewriter.Table, record arrow.Record) error {
 
 	var header []string
 	for c := 0; c < int(record.NumCols()); c++ {
@@ -114,7 +115,6 @@ func printRecord(record arrow.Record) error {
 	}
 
 	table.SetFooter(header)
-	table.Render()
 	return nil
 }
 

@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/alecthomas/kong"
@@ -35,8 +36,9 @@ type CLI struct {
 }
 
 type QueryCmd struct {
-	Query      string `arg:"" help:"Query text"`
-	SkipWarmup bool   `optional:"" help:"Skip warmup request"`
+	Query      string   `arg:"" help:"Query text"`
+	SkipWarmup bool     `optional:"" help:"Skip warmup request"`
+	Output     *os.File `short:"o" optional:"" help:"filename where output is printed"`
 }
 
 func (cmd *QueryCmd) Run(cli *Context) error {
@@ -67,7 +69,11 @@ func (cmd *QueryCmd) Run(cli *Context) error {
 	}
 	warmupDuration := time.Since(beforeWarmup)
 
-	timings, err := printQuery(ctx, c, cmd.Query)
+	w := os.Stdout
+	if cmd.Output != nil {
+		w = cmd.Output
+	}
+	timings, err := printQuery(ctx, w, c, cmd.Query)
 	if err != nil {
 		return err
 	}
