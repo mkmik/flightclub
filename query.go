@@ -11,6 +11,7 @@ import (
 	"github.com/apache/arrow/go/v12/arrow/flight"
 	"github.com/apache/arrow/go/v12/arrow/flight/flightsql"
 	"github.com/olekukonko/tablewriter"
+	"golang.org/x/term"
 )
 
 type Timings struct {
@@ -64,6 +65,9 @@ func printInfo(ctx context.Context, w io.Writer, c *flightsql.Client, info *flig
 	defer table.Render()
 
 	var doGetDuration time.Duration
+	totalRows := 0
+	var header []string
+
 	for _, endpoint := range info.Endpoint {
 		beforeDoGet := time.Now()
 		reader, err := c.DoGet(ctx, endpoint.GetTicket())
@@ -74,6 +78,9 @@ func printInfo(ctx context.Context, w io.Writer, c *flightsql.Client, info *flig
 
 		for reader.Next() {
 			record := reader.Record()
+			totalRows += int(record.NumRows())
+			header = getHeader(record)
+
 			if err := printRecord(table, record); err != nil {
 				return Timings{}, err
 			}
@@ -87,20 +94,27 @@ func printInfo(ctx context.Context, w io.Writer, c *flightsql.Client, info *flig
 			return Timings{}, err
 		}
 	}
+
+	table.SetHeader(header)
+	_, height, _ := term.GetSize(0)
+	if (totalRows + 4) >= height {
+		table.SetFooter(header)
+	}
+
 	timings := Timings{
 		DoGet: doGetDuration,
 	}
 	return timings, nil
 }
 
-func printRecord(table *tablewriter.Table, record arrow.Record) error {
-
-	var header []string
+func getHeader(record arrow.Record) (header []string) {
 	for c := 0; c < int(record.NumCols()); c++ {
 		header = append(header, record.ColumnName(c))
 	}
-	table.SetHeader(header)
+	return header
+}
 
+func printRecord(table *tablewriter.Table, record arrow.Record) error {
 	for r := 0; r < int(record.NumRows()); r++ {
 		var row []string
 		for c := 0; c < int(record.NumCols()); c++ {
@@ -114,7 +128,6 @@ func printRecord(table *tablewriter.Table, record arrow.Record) error {
 		table.Append(row)
 	}
 
-	table.SetFooter(header)
 	return nil
 }
 

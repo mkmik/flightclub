@@ -30,7 +30,7 @@ type Context struct {
 type CLI struct {
 	URL   string `required:""`
 	DB    string `required:""`
-	Token string `env:"FLIGHT_TOOL_TOKEN"`
+	Token string `env:"FLIGHT_CLUB_TOKEN"`
 
 	Query QueryCmd `cmd:"" help:"query"`
 }
@@ -78,7 +78,8 @@ func (cmd *QueryCmd) Run(cli *Context) error {
 		return err
 	}
 
-	fmt.Println(timings.Add(Timings{Warmup: warmupDuration}))
+	fmt.Println()
+	fmt.Print(timings.Add(Timings{Warmup: warmupDuration}))
 
 	return nil
 }
