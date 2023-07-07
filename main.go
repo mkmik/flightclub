@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"encoding/hex"
 	"fmt"
+	"math/rand"
 	"net/url"
 	"os"
 	"time"
@@ -19,6 +21,7 @@ import (
 
 const (
 	pgTimestampFormat = "2006-01-02 15:04:05.999999999"
+	traceIDHeader     = "influx-trace-id"
 )
 
 // Context is a CLI context.
@@ -31,6 +34,9 @@ type CLI struct {
 	URL   string `required:""`
 	DB    string `required:""`
 	Token string `env:"FLIGHT_CLUB_TOKEN"`
+
+	Headers    map[string]string `short:"H" env:"FLIGHT_CLUB_HEADERS"`
+	GenTraceId bool
 
 	Query QueryCmd `cmd:"" help:"query"`
 }
@@ -49,6 +55,14 @@ func (cmd *QueryCmd) Run(cli *Context) error {
 		// enables special queries
 		"iox-debug", "true",
 	)
+	ctx = metadata.AppendToOutgoingContext(ctx, cli.customHeaders()...)
+
+	if cli.GenTraceId {
+		traceID := generateRandomHex(8)
+		ctx = metadata.AppendToOutgoingContext(ctx, traceIDHeader, traceID)
+
+		fmt.Printf("Trace ID set to %s\n", traceID)
+	}
 
 	addr, cred, err := parseAddr(cli.URL)
 	if err != nil {
@@ -84,6 +98,14 @@ func (cmd *QueryCmd) Run(cli *Context) error {
 	return nil
 }
 
+func (cli *CLI) customHeaders() (pairs []string) {
+	for k, v := range cli.Headers {
+		pairs = append(pairs, k)
+		pairs = append(pairs, v)
+	}
+	return pairs
+}
+
 func (cli *CLI) Authenticate(context.Context, flight.AuthConn) error {
 	return fmt.Errorf("not implemented")
 }
@@ -113,6 +135,14 @@ func parseAddr(s string) (string, credentials.TransportCredentials, error) {
 	default:
 		return "", nil, fmt.Errorf("unhandled schema %q", u.Scheme)
 	}
+}
+
+func generateRandomHex(n int) string {
+	bytes := make([]byte, n)
+	rand.Seed(time.Now().UnixNano())
+	rand.Read(bytes)
+
+	return hex.EncodeToString(bytes)
 }
 
 func main() {
