@@ -22,6 +22,7 @@ import (
 const (
 	pgTimestampFormat = "2006-01-02 15:04:05.999999999"
 	traceIDHeader     = "influx-trace-id"
+	traceIDHeader2    = "uber-trace-id"
 )
 
 // Context is a CLI context.
@@ -59,7 +60,11 @@ func (cmd *QueryCmd) Run(cli *Context) error {
 
 	if cli.GenTraceId {
 		traceID := generateRandomHex(8)
-		ctx = metadata.AppendToOutgoingContext(ctx, traceIDHeader, fmt.Sprintf("%s:1112223334445:0:1", traceID))
+		traceHeader := fmt.Sprintf("%s:1112223334445:0:1", traceID)
+		ctx = metadata.AppendToOutgoingContext(ctx,
+			traceIDHeader, traceHeader,
+			traceIDHeader2, traceHeader,
+		)
 
 		fmt.Printf("Trace ID set to %s\n", traceID)
 	}
