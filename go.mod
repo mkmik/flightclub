@@ -4,8 +4,9 @@ go 1.20
 
 require (
 	github.com/alecthomas/kong v0.7.1
-	github.com/apache/arrow/go/v12 v12.0.0
+	github.com/apache/arrow/go/v12 v12.0.1
 	github.com/olekukonko/tablewriter v0.0.5
+	golang.org/x/term v0.10.0
 	google.golang.org/grpc v1.49.0
 )
 
@@ -27,7 +28,6 @@ require (
 	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
-	golang.org/x/term v0.10.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
