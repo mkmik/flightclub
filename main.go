@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/url"
 	"os"
+	"runtime/debug"
 	"time"
 
 	"github.com/alecthomas/kong"
@@ -25,6 +26,9 @@ const (
 	traceIDHeader2    = "uber-trace-id"
 )
 
+// set by goreleaser
+var version = "(devel)"
+
 // Context is a CLI context.
 type Context struct {
 	*CLI
@@ -40,6 +44,8 @@ type CLI struct {
 	GenTraceId bool
 
 	Query QueryCmd `cmd:"" help:"query"`
+
+	Version kong.VersionFlag `name:"version" help:"Print version information and quit"`
 }
 
 type QueryCmd struct {
@@ -150,9 +156,28 @@ func generateRandomHex(n int) string {
 	return hex.EncodeToString(bytes)
 }
 
+func getVersion() string {
+	if bi, ok := debug.ReadBuildInfo(); ok {
+		if v := bi.Main.Version; v != "" && v != "(devel)" {
+			return v
+		}
+	}
+	// otherwise fallback to the version set by goreleaser
+	return version
+}
+
 func main() {
 	var cli CLI
-	ctx := kong.Parse(&cli)
+	ctx := kong.Parse(&cli,
+		kong.UsageOnError(),
+		kong.Vars{
+			"version": getVersion(),
+		},
+		kong.ConfigureHelp(kong.HelpOptions{
+			Compact: true,
+			Summary: true,
+		}),
+	)
 	err := ctx.Run(&Context{CLI: &cli})
 	ctx.FatalIfErrorf(err)
 }
