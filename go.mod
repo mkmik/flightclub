@@ -3,7 +3,7 @@ module github.com/mkmik/flightclub
 go 1.20
 
 require (
-	github.com/alecthomas/kong v0.7.1
+	github.com/alecthomas/kong v0.8.0
 	github.com/apache/arrow/go/v12 v12.0.1
 	github.com/olekukonko/tablewriter v0.0.5
 	golang.org/x/term v0.10.0
