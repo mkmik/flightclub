@@ -19,3 +19,18 @@ $ flightclub --url=https://my-influxdb-database.my-company.com query --db=test '
 
 Warmup: 947.080625ms, Execute: 146.55475ms, DoGet: 172.576625ms, Total: 1.266212s
 ```
+
+
+## Install
+
+Homebrew:
+
+```bash
+brew install mkmik/flightclub/flightclub
+```
+
+Sources:
+
+```bash
+go install github.com/mkmik/flightclub@latest
+```
