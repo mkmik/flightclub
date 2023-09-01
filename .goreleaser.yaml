@@ -25,12 +25,12 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
-#brews:
-#  - name: flightclub
-#    homepage: "https://github.com/mkmik/flightclub"
-#    repository:
-#      owner: mkmik
-#      name: homebrew-flightclub
-#    commit_author:
-#      name: Marko Mikulicic
-#      email: mmikulicic@gmail.com
+brews:
+  - name: flightclub
+    homepage: "https://github.com/mkmik/flightclub"
+    repository:
+      owner: mkmik
+      name: homebrew-flightclub
+    commit_author:
+      name: Marko Mikulicic
+      email: mmikulicic@gmail.com
