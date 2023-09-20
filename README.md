@@ -6,7 +6,7 @@ An Arrow Flight SQL client.
 ## Usage:
 
 ```console
-$ export FLIGHT_CLUB_TOKEN="<redacted>>
+$ export FLIGHT_CLUB_TOKEN="<redacted>"
 $ flightclub --url=https://my-influxdb-database.my-company.com query --db=test 'select * from air_temperature'
     location   | sea_level_degrees | state | tenk_feet_feet_degrees |        time          
 ---------------+-------------------+-------+------------------------+----------------------
