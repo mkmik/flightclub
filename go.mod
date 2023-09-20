@@ -1,4 +1,4 @@
-module github.com/mkmik/flightclub
+module mkm.pub/flightclub
 
 go 1.20
 
