@@ -32,5 +32,5 @@ brew install mkmik/flightclub/flightclub
 Sources:
 
 ```bash
-go install github.com/mkmik/flightclub@latest
+go install mkm.pub/flightclub@latest
 ```
