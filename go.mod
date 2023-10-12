@@ -3,7 +3,7 @@ module mkm.pub/flightclub
 go 1.20
 
 require (
-	github.com/alecthomas/kong v0.8.0
+	github.com/alecthomas/kong v0.8.1
 	github.com/apache/arrow/go/v13 v13.0.0
 	github.com/olekukonko/tablewriter v0.0.5
 	golang.org/x/term v0.12.0
