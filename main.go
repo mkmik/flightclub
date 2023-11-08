@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/alecthomas/kong"
-	"github.com/apache/arrow/go/v13/arrow/flight"
-	"github.com/apache/arrow/go/v13/arrow/flight/flightsql"
+	"github.com/apache/arrow/go/v14/arrow/flight"
+	"github.com/apache/arrow/go/v14/arrow/flight/flightsql"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
