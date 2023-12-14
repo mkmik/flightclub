@@ -72,7 +72,7 @@ func (cmd *QueryCmd) Run(cli *Context) error {
 			traceIDHeader2, traceHeader,
 		)
 
-		fmt.Printf("Trace ID set to %s\n", traceID)
+		fmt.Fprintf(os.Stderr, "Trace ID set to %s\n", traceID)
 	}
 
 	addr, cred, err := parseAddr(cli.URL)
