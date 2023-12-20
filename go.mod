@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/alecthomas/kong v0.8.1
-	github.com/apache/arrow/go/v14 v14.0.1
+	github.com/apache/arrow/go/v14 v14.0.2
 	github.com/olekukonko/tablewriter v0.0.5
 	golang.org/x/term v0.14.0
 	google.golang.org/grpc v1.60.1
