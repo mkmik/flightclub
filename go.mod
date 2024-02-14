@@ -7,7 +7,7 @@ require (
 	github.com/apache/arrow/go/v15 v15.0.0
 	github.com/olekukonko/tablewriter v0.0.5
 	golang.org/x/term v0.16.0
-	google.golang.org/grpc v1.61.0
+	google.golang.org/grpc v1.61.1
 )
 
 require (
