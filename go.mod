@@ -6,7 +6,7 @@ require (
 	github.com/alecthomas/kong v0.9.0
 	github.com/apache/arrow/go/v15 v15.0.2
 	github.com/olekukonko/tablewriter v0.0.5
-	golang.org/x/term v0.18.0
+	golang.org/x/term v0.21.0
 	google.golang.org/grpc v1.64.0
 )
 
@@ -21,7 +21,7 @@ require (
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/mod v0.13.0 // indirect
 	golang.org/x/net v0.22.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
