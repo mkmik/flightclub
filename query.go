@@ -6,10 +6,10 @@ import (
 	"io"
 	"time"
 
-	"github.com/apache/arrow/go/v15/arrow"
-	"github.com/apache/arrow/go/v15/arrow/array"
-	"github.com/apache/arrow/go/v15/arrow/flight"
-	"github.com/apache/arrow/go/v15/arrow/flight/flightsql"
+	"github.com/apache/arrow/go/v16/arrow"
+	"github.com/apache/arrow/go/v16/arrow/array"
+	"github.com/apache/arrow/go/v16/arrow/flight"
+	"github.com/apache/arrow/go/v16/arrow/flight/flightsql"
 	"github.com/olekukonko/tablewriter"
 	"golang.org/x/term"
 )
