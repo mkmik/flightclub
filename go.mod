@@ -1,13 +1,15 @@
 module mkm.pub/flightclub
 
-go 1.20
+go 1.21
+
+toolchain go1.22.5
 
 require (
 	github.com/alecthomas/kong v0.9.0
 	github.com/apache/arrow/go/v15 v15.0.2
 	github.com/olekukonko/tablewriter v0.0.5
 	golang.org/x/term v0.21.0
-	google.golang.org/grpc v1.64.1
+	google.golang.org/grpc v1.65.0
 )
 
 require (
@@ -26,6 +28,6 @@ require (
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
+	google.golang.org/protobuf v1.34.1 // indirect
 )
